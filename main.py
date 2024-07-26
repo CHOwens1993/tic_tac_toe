@@ -162,12 +162,35 @@ def is_board_full(board_arr: list) -> bool:
                 return False
     return True
 
+def play_again() -> bool:
+    """Asks the user if they want to play again
+
+    Returns:
+        bool: Returns True if the player wants to play again
+    """
+    while True:
+        answer = input("Do you want to play again? (Y/N): ")
+        if answer in ('Y', 'y'):
+            return True
+        if answer in ('N', 'n'):
+            return False
+        print("Invalid input, try again.")
+
+def print_scores(scores: list) -> None:
+    """prints out the current scores in format
+
+    Args:
+        scores (list): scores in list as ['X' wins, 'O' wins, Ties]
+    """
+    print(f"Current score is: X:{scores[0]}, O:{scores[1]}, Ties:{scores[2]}")
+
 def main():
     """Main drive of the script"""
     #setting up some starting conditions
     player = 'X'
     board = new_board()
     render(board)
+    scores = [0, 0, 0] #storing scores as ['X' wins, 'O' wins, ties]
 
     #main loop
     while True:
@@ -187,11 +210,27 @@ def main():
         #check end of game options
         if is_winner(board, move):
             print(f"Congratulations, Player {player} wins!")
-            break
+            if player == 'X':
+                scores[0] += 1 #increment 'X' win counts
+            else:
+                scores[1] += 1 #increment 'O' win counts
+            print_scores(scores)
+            if play_again():
+                board = new_board()
+                render(board)
+            else:
+                break
         if is_board_full(board):
-            print('Tie')
-            break
+            print("Oh thats a tie... awkward.")
+            scores[2] += 1 #increment ties count
+            print_scores(scores)
+            if play_again():
+                board = new_board()
+                render(board)
+            else:
+                print("Thanks for playing!")
+                break
         player = change_player(player)
-        #repeat until end of game
+        #repeat until done playing
 
 main()
